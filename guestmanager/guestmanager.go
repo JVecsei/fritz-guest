@@ -54,6 +54,7 @@ type GuestAccess struct {
 	IsTimeoutActive     string      `json:"isTimeoutActive"`
 }
 
+//DefaultSSID represents the default fritzbox guest ssid
 type DefaultSSID struct {
 	Private string `json:"private"`
 	Public  string `json:"public"`
@@ -64,6 +65,7 @@ var (
 	ErrInvalidSession = errors.New("invalid session information")
 )
 
+//GuestManager manages access to the guest network
 type GuestManager struct {
 	session *session.Session
 }
@@ -78,6 +80,7 @@ func NewGuestManager(s *session.Session) (*GuestManager, error) {
 	}, nil
 }
 
+//TurnOn turns the guest network on without changing its settings
 func (g *GuestManager) TurnOn() error {
 	dataURL := fmt.Sprintf("%s/data.lua", g.session.URL)
 	currentConfigReq, err := http.PostForm(dataURL, url.Values{
@@ -129,6 +132,7 @@ func (g *GuestManager) TurnOn() error {
 	return nil
 }
 
+//TurnOff turns the guest network off
 func (g *GuestManager) TurnOff() error {
 	dataURL := fmt.Sprintf("%s/data.lua", g.session.URL)
 	res, err := http.PostForm(dataURL, url.Values{
