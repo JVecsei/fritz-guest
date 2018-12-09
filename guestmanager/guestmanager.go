@@ -19,6 +19,8 @@ var (
 	ErrInvalidSession = errors.New("invalid session information")
 	//ErrTurnOffFailed indicates that the request was successful but guest access is still enabled
 	ErrTurnOffFailed = errors.New("could not disable guest access - still enabled")
+	//ErrTurnOnFailed indicates that the request was successful but guest access is still disabled
+	ErrTurnOnFailed = errors.New("could not enable guest access - still disabled")
 )
 
 //DataResponse holds the important `data` object as well as additional information such as the used SID
@@ -146,6 +148,10 @@ func (g *GuestManager) TurnOnWithPsk(p psk.Psk) error {
 
 	if turnOnDataResponse.Data.Ok != nil {
 		return fmt.Errorf("fb: %s", turnOnDataResponse.Data.Alert)
+	}
+
+	if dataRes.Data.GuestAccess.IsEnabled == "false" {
+		return ErrTurnOnFailed
 	}
 
 	return nil
