@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/JVecsei/fritz-guest/psk"
+
 	"github.com/JVecsei/fritz-guest/session"
 )
 
@@ -88,11 +90,11 @@ func NewGuestManager(s *session.Session) (*GuestManager, error) {
 
 //TurnOn turns the guest network on without changing its settings
 func (g *GuestManager) TurnOn() error {
-	return g.TurnOnWithPsk("")
+	return g.TurnOnWithPsk(psk.Noop())
 }
 
 //TurnOnWithPsk turns guest access on with given PSK. If PSK is empty it uses the currently configured PSK. If there is no PSK set and no PSK given this method will return an error (errNoPSK).
-func (g *GuestManager) TurnOnWithPsk(psk string) error {
+func (g *GuestManager) TurnOnWithPsk(p psk.Psk) error {
 	dataURL := fmt.Sprintf("%s/data.lua", g.session.URL)
 	currentConfigReq, err := http.PostForm(dataURL, url.Values{
 		"sid":   {g.session.SID},
@@ -112,9 +114,9 @@ func (g *GuestManager) TurnOnWithPsk(psk string) error {
 		return err
 	}
 
-	if psk == "" && dataRes.Data.GuestAccess.Psk != "" {
-		psk = dataRes.Data.GuestAccess.Psk
-	} else if psk == "" {
+	if p == "" && dataRes.Data.GuestAccess.Psk != "" {
+		p = psk.FromString(dataRes.Data.GuestAccess.Psk)
+	} else if p == "" {
 		return ErrNoPSK
 	}
 
@@ -122,7 +124,7 @@ func (g *GuestManager) TurnOnWithPsk(psk string) error {
 		"isEnabled":       {"1"},
 		"guestAccessType": {"1"},
 		"ssid":            {dataRes.Data.GuestAccess.SSID},
-		"psk":             {psk},
+		"psk":             {p.String()},
 		"sid":             {g.session.SID},
 		"xhr":             {"1"},
 		"page":            {"wGuest"},
