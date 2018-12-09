@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/JVecsei/fritzbox-guest?status.svg)](https://godoc.org/github.com/JVecsei/fritzbox-guest) [![Build Status](https://travis-ci.org/JVecsei/fritzbox-guest.svg?branch=master)](https://travis-ci.org/JVecsei/fritzbox-guest) [![Go Report Card](https://goreportcard.com/badge/github.com/jvecsei/fritzbox-guest)](https://goreportcard.com/report/github.com/jvecsei/fritzbox-guest)
+[![GoDoc](https://godoc.org/github.com/JVecsei/fritz-guest?status.svg)](https://godoc.org/github.com/JVecsei/fritz-guest) [![Build Status](https://travis-ci.org/JVecsei/fritz-guest.svg?branch=master)](https://travis-ci.org/JVecsei/fritz-guest) [![Go Report Card](https://goreportcard.com/badge/github.com/jvecsei/fritz-guest)](https://goreportcard.com/report/github.com/jvecsei/fritz-guest)
 
-# fritzbox-guest
+# fritz-guest
 Manage guest access of your fritzbox
