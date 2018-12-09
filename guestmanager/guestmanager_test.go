@@ -11,6 +11,21 @@ import (
 	"github.com/JVecsei/fritz-guest/session"
 )
 
+func TestNewGuestManager(t *testing.T) {
+	g, err := NewGuestManager(&session.Session{
+		SID: "",
+	})
+
+	if g != nil {
+		t.Errorf("g should be nil but was %v", g)
+	}
+
+	if err != ErrInvalidSession {
+		t.Errorf("err should be ErrInvalidSession but was %v", err)
+	}
+
+}
+
 func TestGuestManager_TurnOn(t *testing.T) {
 	getConfig := false
 	setConfig := false
