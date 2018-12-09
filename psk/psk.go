@@ -5,16 +5,20 @@ import (
 	"time"
 )
 
+//Psk used to configure the fritzbox
 type Psk string
 
+//FromString returns psk from string
 func FromString(s string) Psk {
 	return Psk(s)
 }
 
+//Random returns random psk with specific length
 func Random(length int) Psk {
 	return Psk(generateRandomString(length))
 }
 
+//Noop returns an empty PSK
 func Noop() Psk {
 	return Psk("")
 }

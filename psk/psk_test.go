@@ -11,3 +11,24 @@ func TestRandom(t *testing.T) {
 		t.Errorf("invalid length of random psk %d != %d", len(p), length)
 	}
 }
+
+func TestNoop(t *testing.T) {
+	p := Noop()
+	if p != "" {
+		t.Errorf("should return an empty PSK")
+	}
+}
+
+func TestFromString(t *testing.T) {
+	p := FromString("private")
+	if p != "private" {
+		t.Errorf("should return 'private' but was '%s'", p)
+	}
+}
+
+func TestString(t *testing.T) {
+	p := FromString("private")
+	if p.String() != "private" {
+		t.Errorf("should return 'private' but was '%s'", p)
+	}
+}
