@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-// todo
 func TestSession_NewSessionByPassword_success(t *testing.T) {
 	getCalled := false
 	postCalled := false

@@ -10,12 +10,20 @@ import (
 	"github.com/JVecsei/fritz-guest/session"
 )
 
+var (
+	//ErrNoPSK indicates that there is no valid PSK given for configuration
+	ErrNoPSK = errors.New("no valid psk was found for configuration")
+	//ErrInvalidSession indicates that no valid session id was found
+	ErrInvalidSession = errors.New("invalid session information")
+	//ErrTurnOffFailed indicates that the request was successful but guest access is still enabled
+	ErrTurnOffFailed = errors.New("could not disable guest access - still enabled")
+)
+
 //DataResponse holds the important `data` object as well as additional information such as the used SID
 type DataResponse struct {
-	Data Data            `json:"data"`
-	Hide map[string]bool `json:"hide"`
-	PID  string          `json:"pid"`
-	Sid  string          `json:"sid"`
+	Data Data   `json:"data"`
+	PID  string `json:"pid"`
+	Sid  string `json:"sid"`
 }
 
 //Data is a response for guest access from data.lua
@@ -63,11 +71,6 @@ type DefaultSSID struct {
 	Public  string `json:"public"`
 }
 
-var (
-	//ErrInvalidSession indicates that no valid session id was found
-	ErrInvalidSession = errors.New("invalid session information")
-)
-
 //GuestManager manages access to the guest network
 type GuestManager struct {
 	session *session.Session
@@ -85,6 +88,11 @@ func NewGuestManager(s *session.Session) (*GuestManager, error) {
 
 //TurnOn turns the guest network on without changing its settings
 func (g *GuestManager) TurnOn() error {
+	return g.TurnOnWithPsk("")
+}
+
+//TurnOnWithPsk turns guest access on with given PSK. If PSK is empty it uses the currently configured PSK. If there is no PSK set and no PSK given this method will return an error (errNoPSK).
+func (g *GuestManager) TurnOnWithPsk(psk string) error {
 	dataURL := fmt.Sprintf("%s/data.lua", g.session.URL)
 	currentConfigReq, err := http.PostForm(dataURL, url.Values{
 		"sid":   {g.session.SID},
@@ -104,11 +112,17 @@ func (g *GuestManager) TurnOn() error {
 		return err
 	}
 
+	if psk == "" && dataRes.Data.GuestAccess.Psk != "" {
+		psk = dataRes.Data.GuestAccess.Psk
+	} else if psk == "" {
+		return ErrNoPSK
+	}
+
 	res, err := http.PostForm(dataURL, url.Values{
 		"isEnabled":       {"1"},
 		"guestAccessType": {"1"},
 		"ssid":            {dataRes.Data.GuestAccess.SSID},
-		"psk":             {dataRes.Data.GuestAccess.Psk},
+		"psk":             {psk},
 		"sid":             {g.session.SID},
 		"xhr":             {"1"},
 		"page":            {"wGuest"},
@@ -159,6 +173,10 @@ func (g *GuestManager) TurnOff() error {
 
 	if dataRes.Data.Ok != nil {
 		return fmt.Errorf("fb: %s", dataRes.Data.Alert)
+	}
+
+	if dataRes.Data.GuestAccess.IsEnabled != "false" {
+		return ErrTurnOffFailed
 	}
 	return nil
 }
