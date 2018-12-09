@@ -10,6 +10,7 @@ import (
 	"github.com/JVecsei/fritz-guest/session"
 )
 
+//DataResponse holds the important `data` object as well as additional information such as the used SID
 type DataResponse struct {
 	Data Data            `json:"data"`
 	Hide map[string]bool `json:"hide"`
@@ -17,6 +18,7 @@ type DataResponse struct {
 	Sid  string          `json:"sid"`
 }
 
+//Data is a response for guest access from data.lua
 type Data struct {
 	Timestamp   int64       `json:"timestamp"`
 	GuestAccess GuestAccess `json:"guestAccess"`
@@ -24,6 +26,7 @@ type Data struct {
 	Alert       string      `json:"alert"`
 }
 
+//GuestAccess holds all guest network information that is returned from the fritzbox
 type GuestAccess struct {
 	LPTxt               string      `json:"lPTxt"`
 	Psk                 string      `json:"psk"`
