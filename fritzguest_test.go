@@ -7,6 +7,7 @@ import (
 	"github.com/JVecsei/fritz-guest/session"
 )
 
+//Turn on guest access with currently set PSK
 func Example_turnOn() {
 	s, err := session.NewSessionByUsernamePassword("http://fritz.box", "uName", "passwd")
 	if err != nil {
@@ -22,6 +23,7 @@ func Example_turnOn() {
 	}
 }
 
+//Turn on guest access with a new given PSK
 func Example_turnOnWithSpecificPsk() {
 	s, err := session.NewSessionByUsernamePassword("http://fritz.box", "uName", "passwd")
 	if err != nil {
@@ -37,6 +39,7 @@ func Example_turnOnWithSpecificPsk() {
 	}
 }
 
+//Turn on guest access with a random PSK
 func Example_turnOnWithRandomPsk() {
 	s, err := session.NewSessionByUsernamePassword("http://fritz.box", "uName", "passwd")
 	if err != nil {
@@ -46,12 +49,13 @@ func Example_turnOnWithRandomPsk() {
 	if err != nil {
 		handleError(err)
 	}
-	err = g.TurnOnWithPsk(psk.Random())
+	err = g.TurnOnWithPsk(psk.Random(10))
 	if err != nil {
 		handleError(err)
 	}
 }
 
+//Turn off guest access
 func Example_turnOff() {
 	s, err := session.NewSessionByUsernamePassword("http://fritz.box", "uName", "passwd")
 	if err != nil {
