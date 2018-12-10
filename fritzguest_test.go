@@ -8,7 +8,7 @@ import (
 )
 
 //Turn on guest access with currently set PSK
-func Example_turn_On() {
+func Example_turnOn() {
 	s, err := session.NewSessionByUsernamePassword("http://fritz.box", "uName", "passwd")
 	if err != nil {
 		handleError(err)
